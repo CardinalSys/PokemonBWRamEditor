@@ -6,6 +6,7 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
 
@@ -16,5 +17,6 @@
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.6" />
+    <PackageReference Include="Memory.dll.x64" Version="1.2.24" />
   </ItemGroup>
 </Project>
