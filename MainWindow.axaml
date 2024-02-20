@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Width="600" Height="450"
+        x:Class="PkmBWRamEditor.MainWindow"
+        Title="PkmBWRamEditor">
+        
+
+  <Window.Resources>
+    <MenuFlyout x:Key="FileMenu">
+      <MenuItem Header="Open" Click="OpenClick"/>
+    </MenuFlyout>
+    <MenuFlyout x:Key="EditMenu">
+      <MenuItem Header="Sprites" Click="SpritesClick"/>
+    </MenuFlyout>
+    <MenuFlyout x:Key="InfoMenu">
+      <MenuItem Header="About" Click="AboutClick"/>
+    </MenuFlyout>
+  </Window.Resources>
+  
+  <DockPanel Name="TopPanel">
+
+    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="Gray">
+      <Button Content="File" Flyout="{StaticResource FileMenu}" Margin="5"/>
+      <Button Content="Edit" Flyout="{StaticResource EditMenu}" Margin="5"/>
+
+      <Button Content="Info" Flyout="{StaticResource InfoMenu}" Margin="5"/>
+      
+      </StackPanel>
+
+
+    <StackPanel Orientation="Horizontal">
+      <Panel x:Name="MainPanel" IsVisible="True">
+        
+      </Panel>
+      
+      <Panel x:Name="SpritesPanel" IsVisible="False">
+        <TextBlock Text="Hola"> </TextBlock>
+      </Panel>
+    </StackPanel>
+  </DockPanel>
+  
+</Window>
+
