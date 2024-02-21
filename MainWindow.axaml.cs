@@ -41,12 +41,14 @@ namespace PkmBWRamEditor
 			}
 		}
 
+		RamAPI ram = RamAPI.GetInstance();
+
 		private async void SpritesClick(object sender, RoutedEventArgs e)
 		{
 			MainPanel.IsVisible = false;
 			SpritesPanel.IsVisible = true;
 
-			RamAPI ram = RamAPI.GetInstance();
+
 
 			ram.ProcName = processName;
 
@@ -54,38 +56,33 @@ namespace PkmBWRamEditor
 
 			ram.ReadPos(await ram.GetBaseSpriteAddress());
 
-			try
+			Image[] images = new Image[5];
+			images[0] = Sprite1;
+			images[1] = Sprite2;
+			images[2] = Sprite3;
+			images[3] = Sprite4;
+			images[4] = Sprite5;
+
+			for (int i = 0; i < ram.spritesMemoryLocation.Count; i++)
 			{
-				var ImageToView = new Bitmap("C:\\Users\\tmkuh\\source\\repos\\PkmBWRamEditor\\PkmBWRamEditor\\img\\" + ram.spritesMemoryLocation[0][240].ToString("X") + ".png");
-				Sprite1.Source = ImageToView;
-			} catch { }
+				try
+				{
+					var ImageToView = new Bitmap("C:\\Users\\tmkuh\\source\\repos\\PkmBWRamEditor\\PkmBWRamEditor\\img\\" + ram.spritesMemoryLocation[i][240].ToString("X") + ".png");
+					images[i].Source = ImageToView;
+				}
+				catch { }
 
-			try
-			{
-				var ImageToView2 = new Bitmap("C:\\Users\\tmkuh\\source\\repos\\PkmBWRamEditor\\PkmBWRamEditor\\img\\" + ram.spritesMemoryLocation[1][240].ToString("X") + ".png");
-				Sprite2.Source = ImageToView2;
-			}
-			catch { }
+			}	
+		}
 
-			try
-			{
-				var ImageToView3 = new Bitmap("C:\\Users\\tmkuh\\source\\repos\\PkmBWRamEditor\\PkmBWRamEditor\\img\\" + ram.spritesMemoryLocation[2][240].ToString("X") + ".png");
-				Sprite3.Source = ImageToView3;
-			}
-			catch { }
+		private void ShowSpriteInfo(object sender, RoutedEventArgs e)
+		{
+			SpriteInfoPanel.IsVisible = true;
 
-			try
-			{
-				var ImageToView4 = new Bitmap("C:\\Users\\tmkuh\\source\\repos\\PkmBWRamEditor\\PkmBWRamEditor\\img\\" + ram.spritesMemoryLocation[3][240].ToString("X") + ".png");
-				Sprite4.Source = ImageToView4;
-			} catch { }
+			Button b = (Button)e.Source;
 
-
-			
-			
-			
-			
-
+			UIXPos.Text = "X: " + ram.spritesMemoryLocation[int.Parse(b.Name.ToString().Split("_")[1])][82].ToString("X");
+			UIYPos.Text = "Y: " + ram.spritesMemoryLocation[int.Parse(b.Name.ToString().Split("_")[1])][90].ToString("X");
 		}
 
 

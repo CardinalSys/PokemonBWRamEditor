@@ -29,37 +29,48 @@
 
     <DockPanel>
 
-      <Panel x:Name="MainPanel" IsVisible="True">
+      <Panel x:Name="MainPanel" IsVisible="False">
 
       </Panel>
 
-      <StackPanel x:Name="SpritesPanel" DockPanel.Dock="Top" Orientation="Horizontal" IsVisible="False">
-        <Button Content="Foto 1" Margin="5">
+      <StackPanel x:Name="SpritesPanel" DockPanel.Dock="Top" Orientation="Horizontal" IsVisible="True">
+        <Button Name="Foto_0" Margin="5" Click="ShowSpriteInfo">
           <Image x:Name="Sprite1" Margin="1" Height="50" Width="50"
                  Stretch="UniformToFill"
                  Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
         </Button>
-        <Button Content="Foto 2" Margin="5">
+        <Button Name="Foto_1" Margin="5" Click="ShowSpriteInfo">
           <Image x:Name="Sprite2" Margin="1" Height="50" Width="50"
             Stretch="UniformToFill"
             Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
         </Button>
-        <Button Content="Foto 3" Margin="5">
+        <Button Name="Foto_2" Margin="5" Click="ShowSpriteInfo">
           <Image x:Name="Sprite3" Margin="1" Height="50" Width="50"
             Stretch="UniformToFill"
             Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
         </Button>
-        <Button Content="Foto 4" Margin="5">
+        <Button Name="Foto_3" Margin="5" Click="ShowSpriteInfo">
           <Image x:Name="Sprite4" Margin="1" Height="50" Width="50"
+            Stretch="UniformToFill"
+            Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
+        </Button>
+        <Button Name="Foto_4" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite5" Margin="1" Height="50" Width="50"
             Stretch="UniformToFill"
             Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
         </Button>
       </StackPanel>
 
+      <StackPanel x:Name="SpriteInfoPanel" DockPanel.Dock="Top" Orientation="Vertical" Margin="5,20" IsVisible="False">
+        <TextBlock>Grid Sprite Position:</TextBlock>
+        <TextBlock x:Name="UIXPos" Text="Position X: " ></TextBlock>
+        <TextBlock x:Name="UIYPos" Text="Position Y: " ></TextBlock>
+      </StackPanel>
 
-      <Panel>   
-        <TextBlock x:Name="Test"> </TextBlock>
-      </Panel>
+
+
+
+
     </DockPanel>
 
   </DockPanel>
