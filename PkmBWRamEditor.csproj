@@ -9,7 +9,6 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="img\0.png" />
     <None Remove="img\1.png" />
     <None Remove="img\14.png" />
     <None Remove="img\16.png" />
@@ -20,9 +19,6 @@
     <None Remove="img\null.png" />
   </ItemGroup>
   <ItemGroup>
-    <AvaloniaResource Include="img\0.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </AvaloniaResource>
     <AvaloniaResource Include="img\1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
