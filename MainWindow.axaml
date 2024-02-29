@@ -91,11 +91,23 @@
           <Image x:Name="Sprite14" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
         </Button>
       </Grid>
-      <StackPanel x:Name="SpriteInfoPanel" DockPanel.Dock="Top" Orientation="Vertical" Margin="5,20" IsVisible="False">
-        <TextBlock>Grid Sprite Position:</TextBlock>
-        <TextBlock x:Name="UIXPos" Text="Position X: " ></TextBlock>
-        <TextBlock x:Name="UIYPos" Text="Position Y: " ></TextBlock>
-      </StackPanel>
+
+      <Grid x:Name="SpriteInfoGrid" DockPanel.Dock="Top" IsVisible="False">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Grid Sprite Position:"></TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,10,0,0" x:Name="UIXPos" Text="Position X: "></TextBlock>
+        <CheckBox x:Name="FreezeXPos" Grid.Row="1" Grid.Column="1" >Freeze</CheckBox>
+        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,10,0,0" x:Name="UIYPos" Text="Position Y: "></TextBlock>
+        <CheckBox x:Name="FreezeYPos" Grid.Row="2" Grid.Column="1" >Freeze</CheckBox>
+      </Grid>
 
     </DockPanel>
 

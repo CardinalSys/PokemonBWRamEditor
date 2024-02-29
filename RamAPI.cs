@@ -68,5 +68,12 @@ namespace PkmBWRamEditor
 		{
 			return _procMem.ReadByte(address);
 		}
+
+		public void WriteRam(int offset, byte value)
+		{
+			long last = AoBScanResults.Last();
+			string address = (last - offset).ToString("X");
+			_procMem.WriteMemory(address, "byte", value.ToString("X"));
+		}
 	}
 }

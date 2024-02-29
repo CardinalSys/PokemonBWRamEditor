@@ -29,6 +29,8 @@ namespace PkmBWRamEditor
 		private string processName = "";
 		private CancellationTokenSource _cts;
 
+		private byte yFreezeValue = 0;
+
 
 
 		private async void OpenClick(object sender, RoutedEventArgs e)
@@ -83,8 +85,9 @@ namespace PkmBWRamEditor
 			for (int i = 0; i < ram.spritesMemoryLocationList.Count; i++)
 			{
 				try
-				{				
-					var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/" + ram.spritesMemoryLocationList[i][240].ToString("X") + ".png")));
+				{
+					string imgId = ram.spritesMemoryLocationList[i][240].ToString("X");
+					var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/" + imgId + ".png")));
 					images[i].Source = ImageToView;
 				}
 				catch { }
@@ -106,6 +109,7 @@ namespace PkmBWRamEditor
 
 		public void UpdateList(CancellationToken token, Button b)
 		{
+			byte xFreezeValue = 0;
 			while (!token.IsCancellationRequested)
 			{
 
@@ -114,12 +118,42 @@ namespace PkmBWRamEditor
 
 				Dispatcher.UIThread.Post(() =>
 				{
+					
+					int xAddress = int.Parse(b.Name.ToString().Split("_")[1]);
+					byte xValue = ram.spritesMemoryLocationList[xAddress][82];
+
+					int yAddress = int.Parse(b.Name.ToString().Split("_")[1]);
+					byte yValue = ram.spritesMemoryLocationList[yAddress][90];
+
+					if (FreezeXPos.IsChecked == true)
+					{
+						if (xFreezeValue == 0)
+							xFreezeValue = xValue;
+						if(xFreezeValue != xValue)
+							ram.WriteRam(62 + (256 * xAddress), xFreezeValue);
+					}
+					else
+					{
+						xFreezeValue = 0;
+					}
+
+					if (FreezeYPos.IsChecked == true)
+					{
+						if (yFreezeValue == 0)
+							yFreezeValue = yValue;
+						ram.WriteRam(54 + (256 * yAddress), yFreezeValue);
+					}
+					else
+					{
+						yFreezeValue = 0;
+					}
+
+
 					ram.spritesMemoryLocationList = newSpriteList;
 
-					UIXPos.Text = "X: " + ram.spritesMemoryLocationList[int.Parse(b.Name.ToString().Split("_")[1])][82].ToString("X");
-					UIYPos.Text = "Y: " + ram.spritesMemoryLocationList[int.Parse(b.Name.ToString().Split("_")[1])][90].ToString("X");
+					UIXPos.Text = "X: " + ram.spritesMemoryLocationList[xAddress][82].ToString("X");
+					UIYPos.Text = "Y: " + ram.spritesMemoryLocationList[yAddress][90].ToString("X");
 				});
-
 
 				Task.Delay(100).Wait();
 			}
@@ -129,7 +163,7 @@ namespace PkmBWRamEditor
 		{
 			StopUpdateTask();
 
-			SpriteInfoPanel.IsVisible = true;
+			SpriteInfoGrid.IsVisible = true;
 
 			Button b = (Button)e.Source;
 
