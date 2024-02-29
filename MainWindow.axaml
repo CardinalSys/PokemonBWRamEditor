@@ -5,8 +5,6 @@
         Width="600" Height="450"
         x:Class="PkmBWRamEditor.MainWindow"
         Title="PkmBWRamEditor">
-        
-
   <Window.Resources>
     <MenuFlyout x:Key="FileMenu">
       <MenuItem Header="Open" Click="OpenClick"/>
@@ -18,6 +16,8 @@
       <MenuItem Header="About" Click="AboutClick"/>
     </MenuFlyout>
   </Window.Resources>
+
+  
 
   <DockPanel Name="TopPanel">
 
@@ -33,43 +33,69 @@
 
       </Panel>
 
-      <StackPanel x:Name="SpritesPanel" DockPanel.Dock="Top" Orientation="Horizontal" IsVisible="True">
-        <Button Name="Foto_0" Margin="5" Click="ShowSpriteInfo">
-          <Image x:Name="Sprite1" Margin="1" Height="50" Width="50"
-                 Stretch="UniformToFill"
-                 Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
-        </Button>
-        <Button Name="Foto_1" Margin="5" Click="ShowSpriteInfo">
-          <Image x:Name="Sprite2" Margin="1" Height="50" Width="50"
-            Stretch="UniformToFill"
-            Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
-        </Button>
-        <Button Name="Foto_2" Margin="5" Click="ShowSpriteInfo">
-          <Image x:Name="Sprite3" Margin="1" Height="50" Width="50"
-            Stretch="UniformToFill"
-            Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
-        </Button>
-        <Button Name="Foto_3" Margin="5" Click="ShowSpriteInfo">
-          <Image x:Name="Sprite4" Margin="1" Height="50" Width="50"
-            Stretch="UniformToFill"
-            Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
-        </Button>
-        <Button Name="Foto_4" Margin="5" Click="ShowSpriteInfo">
-          <Image x:Name="Sprite5" Margin="1" Height="50" Width="50"
-            Stretch="UniformToFill"
-            Source="C:\Users\tmkuh\source\repos\PkmBWRamEditor\PkmBWRamEditor\img\1.png"/>
-        </Button>
-      </StackPanel>
+      <Grid x:Name="SpritesGrid" DockPanel.Dock="Top" IsVisible="False">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
+        <Button Grid.Row="0" Grid.Column="0" Name="Foto_0" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite1" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="1" Name="Foto_1" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite2" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="2" Name="Foto_2" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite3" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="3" Name="Foto_3" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite4" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="4" Name="Foto_4" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite5" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="5" Name="Foto_5" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite6" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="6" Name="Foto_6" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite7" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="0" Name="Foto_7" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite8" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="1" Name="Foto_8" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite9" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="2" Name="Foto_9" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite10" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="3" Name="Foto_10" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite11" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="4" Name="Foto_11" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite12" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="5" Name="Foto_12" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite13" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="6" Name="Foto_13" Margin="5" Click="ShowSpriteInfo">
+          <Image x:Name="Sprite14" Margin="1" Height="50" Width="50" Stretch="UniformToFill" Source="avares://PkmBWRamEditor/img/null.png"/>
+        </Button>
+      </Grid>
       <StackPanel x:Name="SpriteInfoPanel" DockPanel.Dock="Top" Orientation="Vertical" Margin="5,20" IsVisible="False">
         <TextBlock>Grid Sprite Position:</TextBlock>
         <TextBlock x:Name="UIXPos" Text="Position X: " ></TextBlock>
         <TextBlock x:Name="UIYPos" Text="Position Y: " ></TextBlock>
       </StackPanel>
-
-
-
-
 
     </DockPanel>
 
