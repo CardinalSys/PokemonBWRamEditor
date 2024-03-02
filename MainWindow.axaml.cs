@@ -122,10 +122,13 @@ namespace PkmBWRamEditor
 			int index = int.Parse(b.Name.ToString().Split("_")[1]);
 			byte xFreezeValue = 0;
 			byte yFreezeValue = 0;
-			bool isXFreeze = false;
-			bool isYFreeze = false;
+			byte AnimationFreezeValue = 0;
+			bool isXFrozen = false;
+			bool isYFrozen = false;
+			bool isAnimationFrozen = false;
 			string newXValueString = null;
 			string newYValueString = null;
+			string newAnimation = null;
 
 			while (!token.IsCancellationRequested)
 			{			
@@ -138,18 +141,19 @@ namespace PkmBWRamEditor
 				{
 					UIXPos.Text = "X: " + newSpriteList[index][81].ToString("X");
 					UIYPos.Text = "Y: " + newSpriteList[index][89].ToString("X");
-					UIZPos.Text = "Z: " + newSpriteList[index][30].ToString("X");
+					AnimationId.Text = "Animation: " + newSpriteList[index][35].ToString("X");
 
-					isXFreeze = FreezeXPos.IsChecked == true;
-					isYFreeze = FreezeYPos.IsChecked == true;
+					isXFrozen = FreezeXPos.IsChecked == true;
+					isYFrozen = FreezeYPos.IsChecked == true;
+					isAnimationFrozen = FreezeAnimationId.IsChecked == true;
 
 					newXValueString = XNewPos.Text;
 					newYValueString = YNewPos.Text;
-
+					newAnimation = NewAnimationId.Text;
 
 				});
 
-
+				//Change x pos
 				if(newXValueString != null)
 				{
 					byte newXValue;
@@ -160,6 +164,7 @@ namespace PkmBWRamEditor
 					}
 				}
 
+				//Change Y pos
 				if (newYValueString != null)
 				{
 					byte newYValue;
@@ -170,7 +175,18 @@ namespace PkmBWRamEditor
 					}
 				}
 
-				if (isXFreeze)
+				//Change Animation
+				if (newAnimation != null)
+				{
+					byte newValue;
+					if (byte.TryParse(newAnimation, out newValue))
+					{
+						ram.WriteRam(35 + (256 * index), newValue);
+					}
+				}
+
+				//Freeze x pos
+				if (isXFrozen)
 					ram.WriteRam(81 + (256 * index), xFreezeValue);
 				else
 				{
@@ -179,13 +195,22 @@ namespace PkmBWRamEditor
 						ram.WriteRam(71 + (256 * index), newSpriteList[index][81]);
 				}
 
-				if (isYFreeze)
+				//Freeze y pos
+				if (isYFrozen)
 					ram.WriteRam(89 + (256 * index), yFreezeValue);
 				else
 				{
 					yFreezeValue = newSpriteList[index][89];
 					if (newSpriteList[index][75] != newSpriteList[index][89])
 						ram.WriteRam(75 + (256 * index), newSpriteList[index][89]);
+				}
+
+				//Freeze Animation
+				if (isAnimationFrozen)
+					ram.WriteRam(35 + (256 * index), AnimationFreezeValue);
+				else
+				{
+					AnimationFreezeValue = newSpriteList[index][35];
 				}
 
 				Task.Delay(100).Wait();
