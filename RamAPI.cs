@@ -62,7 +62,25 @@ namespace PkmBWRamEditor
 			return newList;
 		}
 
+		public void FreezeXPos()
+		{
+			_procMem.WriteMemory("DeSmuME_0.9.13_x64.exe+2336CF6", "bytes", "90 90 90 90 90 90 90 90");
+		}
 
+		public void UnFreezeXPos()
+		{
+			_procMem.WriteMemory("DeSmuME_0.9.13_x64.exe+2336CF6", "bytes", "46 89 84 09 00 54 91 0A");
+		}
+
+		public void FreezeYPos()
+		{
+			_procMem.WriteMemory("DeSmuME_0.9.13_x64.exe + 233993D", "bytes", "90 90 90 90 90 90 90 90");
+		}
+
+		public void UnFreezeYPos()
+		{
+			_procMem.WriteMemory("DeSmuME_0.9.13_x64.exe + 233993D", "bytes", "46 89 8C 31 00 54 91 0A");
+		}
 
 		public int ReadPos(string address)
 		{
