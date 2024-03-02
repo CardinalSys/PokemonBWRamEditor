@@ -33,7 +33,8 @@ namespace PkmBWRamEditor
 		private string processName = "";
 		private CancellationTokenSource _cts;
 
-
+		int index;
+		int spriteNumber = 0;
 
 		private async void OpenClick(object sender, RoutedEventArgs e)
 		{
@@ -87,6 +88,8 @@ namespace PkmBWRamEditor
 			images[12] = Sprite12;
 			images[13] = Sprite13;
 
+			spriteNumber = 0;
+
 			for (int i = 0; i < images.Length; i++)
 			{
 				try
@@ -94,6 +97,7 @@ namespace PkmBWRamEditor
 					string imgId = ram.spritesMemoryLocationList[i][239].ToString("X");
 					var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/" + imgId + ".png")));
 					images[i].Source = ImageToView;
+					spriteNumber++;
 				}
 				catch {
 					var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/null.png")));
@@ -114,12 +118,15 @@ namespace PkmBWRamEditor
 			_cts?.Cancel();
 		}
 
-
+		public void SpawnCloneBtn(object sender, RoutedEventArgs e)
+		{
+			ram.WriteBytes(256 * spriteNumber, ram.spritesMemoryLocationList[index]);
+		}
 
 
 		public void UpdateList(CancellationToken token, Button b)
 		{
-			int index = int.Parse(b.Name.ToString().Split("_")[1]);
+			index = int.Parse(b.Name.ToString().Split("_")[1]);
 			byte xFreezeValue = 0;
 			byte yFreezeValue = 0;
 			byte AnimationFreezeValue = 0;

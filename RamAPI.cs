@@ -76,6 +76,13 @@ namespace PkmBWRamEditor
 			_procMem.WriteMemory(address, "byte", value.ToString("X"));
 		}
 
+		public void WriteBytes(int offset, byte[] array)
+		{
+			long last = AoBScanResults.Last() + 57;
+			string address = (last + offset).ToString("X");
+			_procMem.WriteBytes(address, array);
+		}
+
 		public void UpdateList()
 		{
 

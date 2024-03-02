@@ -99,11 +99,13 @@
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto"/>
           <ColumnDefinition Width="Auto"/>
           <ColumnDefinition Width="Auto"/>
+          
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,10,40,0" x:Name="UIXPos" Text="Position X: "></TextBlock>
         <TextBox x:Name="XNewPos" Grid.Row="0" Grid.Column="1" Watermark="0" Margin="0,0,30,0"/>
@@ -123,6 +125,8 @@
         <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,10,40,0" x:Name="AnimationId" Text="Animation: "></TextBlock>
         <TextBox x:Name="NewAnimationId" Grid.Row="4" Grid.Column="1" Watermark="0" Margin="0,0,30,0"/>
         <CheckBox x:Name="FreezeAnimationId" Grid.Row="4" Grid.Column="2" >Freeze</CheckBox>
+
+        <Button Grid.Row="5" Grid.Column="0" Name="SpawnClone" Margin="5" Click="SpawnCloneBtn">SpawnClone</Button>
         
       </Grid>
 
