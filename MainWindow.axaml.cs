@@ -6,6 +6,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.ComponentModel;
@@ -31,8 +32,6 @@ namespace PkmBWRamEditor
 
 		private string processName = "";
 		private CancellationTokenSource _cts;
-
-
 
 
 
@@ -92,7 +91,7 @@ namespace PkmBWRamEditor
 			{
 				try
 				{
-					string imgId = ram.spritesMemoryLocationList[i][240].ToString("X");
+					string imgId = ram.spritesMemoryLocationList[i][239].ToString("X");
 					var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/" + imgId + ".png")));
 					images[i].Source = ImageToView;
 				}
@@ -116,76 +115,78 @@ namespace PkmBWRamEditor
 		}
 
 
-		private void UpdatePos(string text, int index, int pos, int col)
-		{
-			byte value;
-
-			if (text != null)
-			{
-				if (byte.TryParse(text, out value))
-				{
-					ram.WriteRam(pos + (256 * index), value);
-					ram.WriteRam(col + (256 * index), value);
-				}
-			}
-		}
-
-		private void UpdateSpriteId(string text, int index, int offset)
-		{
-			byte value;
-
-			if (text != ram.spritesMemoryLocationList[index][offset].ToString("X"))
-			{
-
-				if (byte.TryParse(text, out value))
-				{
-					ram.WriteRam(offset + (256 * index), value);
-				}
-			}
-		}
 
 
 		public void UpdateList(CancellationToken token, Button b)
 		{
-			while (!token.IsCancellationRequested)
-			{
+			int index = int.Parse(b.Name.ToString().Split("_")[1]);
+			byte xFreezeValue = 0;
+			byte yFreezeValue = 0;
+			bool isXFreeze = false;
+			bool isYFreeze = false;
+			string newXValueString = null;
+			string newYValueString = null;
 
-				var newSpriteList = ram.CreateSpriteList(ram.AoBScanResults.Last().ToString());
+			while (!token.IsCancellationRequested)
+			{			
+				var newSpriteList = ram.CreateSpriteList((ram.AoBScanResults.Last() + 57).ToString());
+
+				
 
 
 				Dispatcher.UIThread.Post(() =>
 				{
-					
-					int index = int.Parse(b.Name.ToString().Split("_")[1]) + 1;
+					UIXPos.Text = "X: " + newSpriteList[index][81].ToString("X");
+					UIYPos.Text = "Y: " + newSpriteList[index][89].ToString("X");
+					UIZPos.Text = "Z: " + newSpriteList[index][30].ToString("X");
 
+					isXFreeze = FreezeXPos.IsChecked == true;
+					isYFreeze = FreezeYPos.IsChecked == true;
 
-					UpdatePos(XNewPos.Text, index, 26, 16);
+					newXValueString = XNewPos.Text;
+					newYValueString = YNewPos.Text;
 
-					UpdatePos(YNewPos.Text, index, 34, 20);
-
-
-					UpdateSpriteId(NewSpriteID.Text, index, 184);
-
-					
-					if (FreezeXPos.IsChecked == true)
-						ram.FreezeXPos();
-					else
-						ram.UnFreezeXPos();
-
-					if (FreezeYPos.IsChecked == true)
-						ram.FreezeXPos();
-					else
-						ram.UnFreezeXPos();
-
-					
-					ram.spritesMemoryLocationList = newSpriteList;
-
-					UIXPos.Text = "X: " + ram.spritesMemoryLocationList[index][26].ToString("X");			
-					UIYPos.Text = "Y: " + ram.spritesMemoryLocationList[index][34].ToString("X");
-					UIZPos.Text = "Z: " + ram.spritesMemoryLocationList[index][30].ToString("X");
-					SpriteId.Text = "Sprite ID: " + ram.spritesMemoryLocationList[index][184].ToString("X");
 
 				});
+
+
+				if(newXValueString != null)
+				{
+					byte newXValue;
+					if (byte.TryParse(newXValueString, out newXValue))
+					{
+						ram.WriteRam(81 + (256 * index), newXValue);
+						ram.WriteRam(71 + (256 * index), newXValue);
+					}
+				}
+
+				if (newYValueString != null)
+				{
+					byte newYValue;
+					if (byte.TryParse(newYValueString, out newYValue))
+					{
+						ram.WriteRam(89 + (256 * index), newYValue);
+						ram.WriteRam(75 + (256 * index), newYValue);
+					}
+				}
+
+				if (isXFreeze)
+					ram.WriteRam(81 + (256 * index), xFreezeValue);
+				else
+				{
+					xFreezeValue = newSpriteList[index][81];
+					if(newSpriteList[index][71] != newSpriteList[index][81])
+						ram.WriteRam(71 + (256 * index), newSpriteList[index][81]);
+				}
+
+				if (isYFreeze)
+					ram.WriteRam(89 + (256 * index), yFreezeValue);
+				else
+				{
+					yFreezeValue = newSpriteList[index][89];
+					if (newSpriteList[index][75] != newSpriteList[index][89])
+						ram.WriteRam(75 + (256 * index), newSpriteList[index][89]);
+				}
 
 				Task.Delay(100).Wait();
 			}
