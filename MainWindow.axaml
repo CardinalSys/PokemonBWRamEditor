@@ -12,6 +12,10 @@
     <MenuFlyout x:Key="EditMenu">
       <MenuItem Header="Sprites" Click="SpritesClick"/>
     </MenuFlyout>
+    <MenuFlyout x:Key="MultiplayerMenu">
+      <MenuItem Header="Server" Click="SpritesClick"/>
+      <MenuItem Header="Client" Click="SpritesClick"/>
+    </MenuFlyout>
     <MenuFlyout x:Key="InfoMenu">
       <MenuItem Header="About" Click="AboutClick"/>
     </MenuFlyout>
@@ -24,6 +28,7 @@
     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="Gray">
       <Button Content="File" Flyout="{StaticResource FileMenu}" Margin="5"/>
       <Button Content="Edit" Flyout="{StaticResource EditMenu}" Margin="5"/>
+      <Button Content="Multiplayer" Flyout="{StaticResource MultiplayerMenu}" Margin="5"/>
       <Button Content="Info" Flyout="{StaticResource InfoMenu}" Margin="5"/>
     </StackPanel>
 
@@ -109,24 +114,17 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,10,40,0" x:Name="UIXPos" Text="Position X: "></TextBlock>
         <TextBox x:Name="XNewPos" Grid.Row="0" Grid.Column="1" Watermark="0" Margin="0,0,30,0"/>
-        <CheckBox x:Name="FreezeXPos" Grid.Row="0" Grid.Column="2" >Freeze</CheckBox>
         
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,10,40,0" x:Name="UIYPos" Text="Position Y: "></TextBlock>
         <TextBox x:Name="YNewPos" Grid.Row="1" Grid.Column="1" Watermark="0" Margin="0,0,30,0"/>
-        <CheckBox x:Name="FreezeYPos" Grid.Row="1" Grid.Column="2" >Freeze</CheckBox>
-        
-        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,10,40,0" x:Name="UIZPos" Text="Position Z: "></TextBlock>
-        <TextBox x:Name="zNewPos" Grid.Row="2" Grid.Column="1" Watermark="0" Margin="0,0,30,0"/>
-        <CheckBox x:Name="FreezeZPos" Grid.Row="2" Grid.Column="2" >Freeze</CheckBox>
         
         <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,10,40,0" x:Name="SpriteId" Text="Sprite ID: "></TextBlock>
-        <TextBox x:Name="NewSpriteID" Grid.Row="3" Grid.Column="1" Watermark="0" Margin="0,0,30,0"/>
         
         <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,10,40,0" x:Name="AnimationId" Text="Animation: "></TextBlock>
         <TextBox x:Name="NewAnimationId" Grid.Row="4" Grid.Column="1" Watermark="0" Margin="0,0,30,0"/>
         <CheckBox x:Name="FreezeAnimationId" Grid.Row="4" Grid.Column="2" >Freeze</CheckBox>
 
-        <Button Grid.Row="5" Grid.Column="0" Name="SpawnClone" Margin="5" Click="SpawnCloneBtn">SpawnClone</Button>
+        <Button Grid.Row="5" Grid.Column="0" Name="SpawnClone" Click="SpawnCloneClick" Margin="5">SpawnClone</Button>
         
       </Grid>
 

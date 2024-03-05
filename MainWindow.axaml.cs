@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,6 +37,8 @@ namespace PkmBWRamEditor
 		int index;
 		int spriteNumber = 0;
 
+		RamAPI ram = RamAPI.GetInstance();
+
 		private async void OpenClick(object sender, RoutedEventArgs e)
 		{
 
@@ -54,11 +57,10 @@ namespace PkmBWRamEditor
 			}
 		}
 
-		RamAPI ram = RamAPI.GetInstance();
+		
 
-		private async void SpritesClick(object sender, RoutedEventArgs e)
+		private void SpritesClick(object sender, RoutedEventArgs e)
 		{
-			StopUpdateTask();
 
 			MainPanel.IsVisible = false;
 			SpritesGrid.IsVisible = true;
@@ -66,11 +68,13 @@ namespace PkmBWRamEditor
 
 
 
-			ram.ProcName = processName;
+			ram.ProcName = "DeSmuME_0.9.13_x64.exe";
 
-			ram.spritesMemoryLocationList.Clear();
+			//Temporal
+			ram.Sprites.Clear();
 
-			ram.ReadPos(await ram.GetBaseSpriteAddress());
+			ram.ReloadSpriteList();
+
 
 			Image[] images = new Image[14];
 			images[0] = Sprite0;
@@ -90,157 +94,96 @@ namespace PkmBWRamEditor
 
 			spriteNumber = 0;
 
-			for (int i = 0; i < images.Length; i++)
+			for (int i = 0; i < ram.Sprites.Count; i++)
 			{
-				try
+				int imgId = ram.Sprites[i].Id;
+				if(imgId != 0)
 				{
-					string imgId = ram.spritesMemoryLocationList[i][239].ToString("X");
-					var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/" + imgId + ".png")));
-					images[i].Source = ImageToView;
-					spriteNumber++;
+					try
+					{
+						var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/" + imgId.ToString("X") + ".png")));
+						images[i].Source = ImageToView;
+					}
+					catch
+					{
+						var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/null.png")));
+						images[i].Source = ImageToView;
+					}
 				}
-				catch {
+				else
+				{
 					var ImageToView = new Bitmap(AssetLoader.Open(new Uri("avares://PkmBWRamEditor/img/null.png")));
 					images[i].Source = ImageToView;
 				}
-
+				spriteNumber++;
 			}	
 		}
+
+		public void SpawnCloneClick(object sender, RoutedEventArgs e)
+		{
+			ram.CloneSprite(index);
+		}
+
 
 		private void StartUpdateTask(Button b)
 		{
 			_cts = new CancellationTokenSource();
-			Task.Run(() => UpdateList(_cts.Token, b), _cts.Token);
+			Task.Run(() => UpdateInfo(_cts.Token, b), _cts.Token);
 		}
 
 		public void StopUpdateTask()
 		{
 			_cts?.Cancel();
 		}
-
-		public void SpawnCloneBtn(object sender, RoutedEventArgs e)
-		{
-			ram.WriteBytes(256 * spriteNumber, ram.spritesMemoryLocationList[index]);
-		}
-
-
-		public void UpdateList(CancellationToken token, Button b)
+		public void UpdateInfo(CancellationToken token, Button b)
 		{
 			index = int.Parse(b.Name.ToString().Split("_")[1]);
-			byte xFreezeValue = 0;
-			byte yFreezeValue = 0;
-			byte AnimationFreezeValue = 0;
-			bool isXFrozen = false;
-			bool isYFrozen = false;
-			bool isAnimationFrozen = false;
-			string newXValueString = null;
-			string newYValueString = null;
-			string newAnimation = null;
-
 			while (!token.IsCancellationRequested)
-			{			
-				var newSpriteList = ram.CreateSpriteList((ram.AoBScanResults.Last() + 57).ToString());
+			{
+				int XPos = (int)ram.Sprites[index].GetPos().X;
+				int YPos = (int)ram.Sprites[index].GetPos().Y;
 
-				
-
-
+				int newAnim = (int)ram.Sprites[index].GetAnim();
 				Dispatcher.UIThread.Post(() =>
 				{
-					UIXPos.Text = "X: " + newSpriteList[index][81].ToString("X");
-					UIYPos.Text = "Y: " + newSpriteList[index][89].ToString("X");
-					AnimationId.Text = "Animation: " + newSpriteList[index][35].ToString("X");
 
-					isXFrozen = FreezeXPos.IsChecked == true;
-					isYFrozen = FreezeYPos.IsChecked == true;
-					isAnimationFrozen = FreezeAnimationId.IsChecked == true;
 
-					newXValueString = XNewPos.Text;
-					newYValueString = YNewPos.Text;
-					newAnimation = NewAnimationId.Text;
+					UIXPos.Text = "X: " + XPos;
+					UIYPos.Text = "Y: " + YPos;
+					SpriteId.Text = "Sprite ID: " + ram.Sprites[index].Id;
+					AnimationId.Text = "Animation: " + newAnim;
+
+
+					if(int.TryParse(XNewPos.Text, out XPos))
+						ram.Sprites[index].SetXPos(XPos);
+
+					if (int.TryParse(YNewPos.Text, out YPos))
+						ram.Sprites[index].SetYPos(YPos);
+
+					if (int.TryParse(NewAnimationId.Text, out newAnim))
+						ram.Sprites[index].SetAnim(newAnim);
+
+					NewAnimationId.Text = "";
 
 				});
-
-				//Change x pos
-				if(newXValueString != null)
-				{
-					byte newXValue;
-					if (byte.TryParse(newXValueString, out newXValue))
-					{
-						ram.WriteRam(81 + (256 * index), newXValue);
-						ram.WriteRam(71 + (256 * index), newXValue);
-					}
-				}
-
-				//Change Y pos
-				if (newYValueString != null)
-				{
-					byte newYValue;
-					if (byte.TryParse(newYValueString, out newYValue))
-					{
-						ram.WriteRam(89 + (256 * index), newYValue);
-						ram.WriteRam(75 + (256 * index), newYValue);
-					}
-				}
-
-				//Change Animation
-				if (newAnimation != null)
-				{
-					byte newValue;
-					if (byte.TryParse(newAnimation, out newValue))
-					{
-						ram.WriteRam(35 + (256 * index), newValue);
-					}
-				}
-
-				//Freeze x pos
-				if (isXFrozen)
-					ram.WriteRam(81 + (256 * index), xFreezeValue);
-				else
-				{
-					xFreezeValue = newSpriteList[index][81];
-					if(newSpriteList[index][71] != newSpriteList[index][81])
-						ram.WriteRam(71 + (256 * index), newSpriteList[index][81]);
-				}
-
-				//Freeze y pos
-				if (isYFrozen)
-					ram.WriteRam(89 + (256 * index), yFreezeValue);
-				else
-				{
-					yFreezeValue = newSpriteList[index][89];
-					if (newSpriteList[index][75] != newSpriteList[index][89])
-						ram.WriteRam(75 + (256 * index), newSpriteList[index][89]);
-				}
-
-				//Freeze Animation
-				if (isAnimationFrozen)
-					ram.WriteRam(35 + (256 * index), AnimationFreezeValue);
-				else
-				{
-					AnimationFreezeValue = newSpriteList[index][35];
-				}
 
 				Task.Delay(100).Wait();
 			}
 		}
 
 
-
 		private void ShowSpriteInfo(object sender, RoutedEventArgs e)
 		{
 			StopUpdateTask();
 
-			NewSpriteID.Text = null;
 			YNewPos.Text = null;
 			XNewPos.Text = null;
-			zNewPos.Text = null;
 
 			SpriteInfoGrid.IsVisible = true;
 
 			Button b = (Button)e.Source;
 
 			StartUpdateTask(b);
-
 		}
 
 

@@ -1,92 +1,180 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using Memory;
+using PkmBWRamEditor;
 
 namespace PkmBWRamEditor
 {
 	internal class RamAPI
 	{
 
-		private static RamAPI _instance;
+		private static RamAPI instance;
 
         public string ProcName { get; set; }
-        private string _baseSpritesAddress = "18 F8 24 02 D8 23 28 02 94 B4 28 02 CC 57 27 02 66 AF 28 02 AC 62 25 02 44 55 00 00 1C 40 00 00 64 21 25 02 04 62 25 02 03 00 4E 19 66 6C 64 6D 6D 64 6C 2E 63 00 00 00 00 00 00";
-		private Mem _procMem = new Mem();
 
-		public List<byte[]> spritesMemoryLocationList = new List<byte[]>();
+        private long baseSpritesAddress = 0x14AB675F9;
+		private Mem procMem = new Mem();
 
-		public IEnumerable<long> AoBScanResults;
+		public List<Sprite> Sprites = new List<Sprite>();
 
 		public static RamAPI GetInstance()
 		{
-			if (_instance == null)
-				_instance = new RamAPI();
+			if (instance == null)
+				instance = new RamAPI();
 
-			return _instance;
+			return instance;
 		}
 
-		public async Task<string> GetBaseSpriteAddress() 
+		public byte[] ReadBytes(long address)
 		{
-			ProcName = "DeSmuME_0.9.13_x64.exe";
-			if (_procMem.OpenProcess(ProcName))
+			byte[] bytes = new byte[256];
+			if (IsProcessOpen())
+				bytes = procMem.ReadBytes(address.ToString("X"), 256);
+			return bytes;
+		}
+
+		public int ReadByte(long address)
+		{
+			int result = -1;
+			if (IsProcessOpen())
+				result = procMem.ReadByte(address.ToString("X"));
+			return result;
+		}
+
+		public void WriteBytes(long address, byte[] bytes)
+		{
+			if (IsProcessOpen())
+				procMem.WriteBytes(address.ToString("X"), bytes);
+		}
+
+		public void WriteByte(long address, int value)
+		{
+			if (IsProcessOpen())
+				procMem.WriteMemory(address.ToString("X"), "byte", value.ToString());
+		}
+
+		public bool IsProcessOpen()
+		{
+			return procMem.OpenProcess(ProcName);
+		}
+
+		public void ReloadSpriteList()
+		{
+			long currentSpriteAddrees = baseSpritesAddress;
+			for (int i = 0; i < 14; i++)
 			{
-				AoBScanResults = await _procMem.AoBScan(_baseSpritesAddress, true, true, true);
+				Sprite sprite = new Sprite(currentSpriteAddrees);
 
-				spritesMemoryLocationList = CreateSpriteList((AoBScanResults.Last() + 57).ToString());
+				Sprites.Add(sprite);
 
-				return AoBScanResults.Last().ToString("X");
+				currentSpriteAddrees += 256;
+
 			}
 
-			return "Null";
 		}
 
-		public List<byte[]> CreateSpriteList(string lastAddress)
+		public void CloneSprite(int index)
 		{
-			long address = long.Parse(lastAddress);
+			Sprite sprite = Sprites[index];
 
-			List<byte[]> newList = new List<byte[]>(); ;
-
-			while(_procMem.ReadByte(address.ToString("X")) != 0xFF)
+			for(int i = 0; i < Sprites.Count; i++)
 			{
-				newList.Add(_procMem.ReadBytes((address).ToString("X"), 256));
-
-				address += 256;
+				if (Sprites[i].Id == 0)
+				{
+					Sprites[i] = sprite;
+					WriteBytes(baseSpritesAddress + (256) * i, ReadBytes(baseSpritesAddress + (256) * index));
+					break;
+				}
 			}
-
-			newList.RemoveAt(newList.Count - 1);
-			return newList;
 		}
 
-
-		public int ReadPos(string address)
-		{
-			return _procMem.ReadByte(address);
-		}
-
-		public void WriteRam(int offset, byte value)
-		{
-			long last = AoBScanResults.Last() + 57;
-			string address = (last + offset).ToString("X");
-			_procMem.WriteMemory(address, "byte", value.ToString("X"));
-		}
-
-		public void WriteBytes(int offset, byte[] array)
-		{
-			long last = AoBScanResults.Last() + 57;
-			string address = (last + offset).ToString("X");
-			_procMem.WriteBytes(address, array);
-		}
-
-		public void UpdateList()
-		{
-
-		}
 
 	}
+}
+
+public class Sprite
+{
+	private string name;
+    public int Id { get; set; }
+    public bool isXFrozen { get; set; }
+	public bool isYFrozen { get; set; }
+
+	private long baseAddress;
+	private long xPosAddress;
+	private long xColAddress;
+	private long yPosAddress;
+	private long yColAddress;
+	private long animAddress;
+
+	private long idAddress;
+
+	private RamAPI ram;
+
+	public Sprite(long _baseAddress)
+	{
+		baseAddress = _baseAddress;
+		ram = RamAPI.GetInstance();
+
+		xPosAddress = baseAddress + 81;
+		xColAddress = baseAddress + 71;
+
+		yPosAddress = baseAddress + 89;
+		yColAddress = baseAddress + 75;
+
+		idAddress = baseAddress + 239;
+
+		animAddress = baseAddress + 35;
+
+		Id = GetId();
+	}
+
+	public void SetXPos(int newPos)
+	{
+		ram.WriteByte(xPosAddress, newPos);
+		ram.WriteByte(xColAddress, newPos);
+	}
+
+	public void SetYPos(int newPos)
+	{
+		ram.WriteByte(yPosAddress, newPos);
+		ram.WriteByte(yColAddress, newPos);
+	}
+
+
+
+	public Vector2 GetPos()
+	{
+		Vector2 pos = new Vector2
+		{
+			X = ram.ReadByte(xPosAddress),
+			Y = ram.ReadByte(yPosAddress)
+		};
+		return pos;
+	}
+
+	public void SetAnim(int newAnim)
+	{
+		ram.WriteByte(animAddress, newAnim);
+	}
+
+	public int GetAnim()
+	{
+		int anim = ram.ReadByte(animAddress);
+		return anim;
+	}
+
+	private int GetId()
+	{
+		int _id = ram.ReadByte(idAddress);
+		return _id;
+	}
+
+
 }
