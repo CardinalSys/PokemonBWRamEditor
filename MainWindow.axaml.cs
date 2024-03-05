@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,8 +15,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,7 +66,7 @@ namespace PkmBWRamEditor
 
 		private void SpritesClick(object sender, RoutedEventArgs e)
 		{
-
+			StopUpdateTask();
 			MainPanel.IsVisible = false;
 			SpritesGrid.IsVisible = true;
 			SpriteInfoGrid.IsVisible = false;
@@ -123,6 +128,7 @@ namespace PkmBWRamEditor
 		{
 			ram.CloneSprite(index);
 		}
+
 
 
 		private void StartUpdateTask(Button b)
@@ -197,6 +203,12 @@ namespace PkmBWRamEditor
 				CreateNoWindow = true
 			};
 			Process.Start(psi);
+		}
+
+
+		private void StartMPClick(object sender, RoutedEventArgs e)
+		{
+			Multiplayer.GetInstance().SpawnSecondPlayer();
 		}
 	}
 

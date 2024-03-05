@@ -13,8 +13,7 @@
       <MenuItem Header="Sprites" Click="SpritesClick"/>
     </MenuFlyout>
     <MenuFlyout x:Key="MultiplayerMenu">
-      <MenuItem Header="Server" Click="SpritesClick"/>
-      <MenuItem Header="Client" Click="SpritesClick"/>
+      <MenuItem Header="Start" Click="StartMPClick"/>
     </MenuFlyout>
     <MenuFlyout x:Key="InfoMenu">
       <MenuItem Header="About" Click="AboutClick"/>

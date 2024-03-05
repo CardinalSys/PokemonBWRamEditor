@@ -57,7 +57,7 @@ namespace PkmBWRamEditor
 		public void WriteByte(long address, int value)
 		{
 			if (IsProcessOpen())
-				procMem.WriteMemory(address.ToString("X"), "byte", value.ToString());
+				procMem.WriteMemory(address.ToString("X"), "byte", value.ToString("X"));
 		}
 
 		public bool IsProcessOpen()
@@ -80,7 +80,7 @@ namespace PkmBWRamEditor
 
 		}
 
-		public void CloneSprite(int index)
+		public int CloneSprite(int index)
 		{
 			Sprite sprite = Sprites[index];
 
@@ -90,9 +90,11 @@ namespace PkmBWRamEditor
 				{
 					Sprites[i] = sprite;
 					WriteBytes(baseSpritesAddress + (256) * i, ReadBytes(baseSpritesAddress + (256) * index));
-					break;
+					return i;
 				}
 			}
+
+			return -1;
 		}
 
 
